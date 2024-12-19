@@ -3,6 +3,10 @@
 ## 📝 Descrição
 Projeto de ETL (Extract, Transform, Load) para dados relacionados ao Bitcoin (BTC). Este projeto coleta, processa e armazena dados sobre o Bitcoin para análise e visualização.
 
+pipeline_00.py: extração e tratamento dos dados
+pipeline_01.py: extração e tratamento dos dados com armazenamento local no formato JSON utilizando a biblioteca TinyDB
+
+
 ## 🚀 Funcionalidades
 - Extração de dados de preços do Bitcoin de diversas fontes
 - Transformação e limpeza dos dados coletados

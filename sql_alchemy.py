@@ -1,3 +1,26 @@
+#cria um arquivo chamado "database.py" e coloca o seguinte codigo:
+
+from sqlalchemy.orm import declarative_base
+from sqlalchemy import Column, Float, String, Integer, DateTime
+from datetime import datetime
+
+# Cria a classe Base do SQLAlchemy (na versão 2.x)
+Base = declarative_base()
+
+class BitcoinPreco(Base):
+    """Define a tabela no banco de dados."""
+    __tablename__ = "bitcoin_precos"
+
+    id = Column(Integer, primary_key=True, autoincrement=True)
+    valor = Column(Float, nullable=False)
+    criptomoeda = Column(String(50), nullable=False)  # até 50 caracteres
+    moeda = Column(String(10), nullable=False)        # até 10 caracteres
+    timestamp = Column(DateTime, default=datetime.now)
+
+
+
+#inserir no codigo principal
+
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 
@@ -28,3 +51,15 @@ def criar_tabela():
     """Cria a tabela no banco de dados, se não existir."""
     Base.metadata.create_all(engine)
     print("Tabela criada/verificada com sucesso!")
+
+
+#por fim insere a função que salva no bd postgres
+
+def salvar_dados_postgres(dados):
+    """Salva os dados no banco PostgreSQL."""
+    session = Session()
+    novo_registro = BitcoinPreco(**dados)
+    session.add(novo_registro)
+    session.commit()
+    session.close()
+    print(f"[{dados['timestamp']}] Dados salvos no PostgreSQL!")
