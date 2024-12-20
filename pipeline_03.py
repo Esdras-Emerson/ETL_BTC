@@ -8,6 +8,19 @@ import os
 from dotenv import load_dotenv
 
 
+# Integração com Logfire
+import logging
+import logfire
+from logging import basicConfig, getLogger
+
+# Configuração Logfire
+logfire.configure()
+basicConfig(handlers=[logfire.LogfireLoggingHandler()])
+logger = getLogger(__name__)
+logger.setLevel(logging.INFO)
+logfire.instrument_requests()
+logfire.instrument_sqlalchemy()
+
 # Carrega variáveis de ambiente do arquivo .env
 load_dotenv()
 
@@ -31,7 +44,7 @@ def criar_tabela():
     """Cria a tabela no banco de dados, se não existir."""
     Base.metadata.drop_all(engine)  # Apaga todas as tabelas existentes
     Base.metadata.create_all(engine)
-    print("Tabela recriada com sucesso!")
+    logger.info("Tabela recriada com sucesso!")
 
 # Extrai os dados do BTC diretamente da API da Coinbase
 def extract_dados_btc():
@@ -41,7 +54,7 @@ def extract_dados_btc():
     if response.status_code == 200:
         return response.json()
     else:
-        print(f'Erro na API: {response.status_code}')
+        logger.error(f'Erro na API: {response.status_code}')
 
     
     return None
@@ -71,25 +84,25 @@ def salvar_dados_postgres(dados):
     session.add(novo_registro)
     session.commit()
     session.close()
-    print(f"[{dados['timestamp']}] Dados salvos no PostgreSQL!")
+    logger.info(f"[{dados['timestamp']}] Dados salvos no PostgreSQL!")
 
 
 if __name__ == "__main__":
 
     criar_tabela()
-    print("Iniciando ELT com atualização automática a cada 15s - ctrl+c para interromper")
+    logger.info("Iniciando ELT com atualização automática a cada 15s - ctrl+c para interromper")
     while True:
         try:
             dados = extract_dados_btc()
             if dados:
                 dados_tratados = transform_dados_btc(dados)
-                print("Dados tratados:", dados_tratados)
+                logger.info("Dados tratados:", dados_tratados)
                 salvar_dados_postgres(dados_tratados) 
 
             time.sleep(15)
         except KeyboardInterrupt:
-            print("\nPRocesso interrompido pelo usuário. Finalizando")
+            logger.info("\nPRocesso interrompido pelo usuário. Finalizando")
             break
         except Exception as e:
-            print(f"Erro durante a execução: {e}")
+            logger.error(f"Erro durante a execução: {e}")
             time.sleep(15)

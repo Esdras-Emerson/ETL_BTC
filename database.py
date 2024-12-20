@@ -11,6 +11,6 @@ class BitcoinPreco(Base):
 
     id = Column(Integer, primary_key=True, autoincrement=True)
     valor = Column(Float, nullable=False)
-    cripto = Column(String(50), nullable=False)  # até 50 caracteres
+    criptomoeda = Column(String(50), nullable=False)  # até 50 caracteres
     moeda = Column(String(10), nullable=False)        # até 10 caracteres
     timestamp = Column(DateTime, default=datetime.now)
