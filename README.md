@@ -32,7 +32,7 @@ Projeto de ETL (Extract, Transform, Load) para dados relacionados ao Bitcoin (BT
 - Transformação e limpeza dos dados coletados
 - Múltiplas opções de armazenamento (JSON, SQL)
 - Análise histórica de preços
-- Visualizaç��o de dados através de gráficos
+- Visualização de dados através de gráficos
 - Logging e monitoramento
 - Configuração flexível via variáveis de ambiente
 
